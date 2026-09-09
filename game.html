@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Apology Ride</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #fde8e8;
+            font-family: 'Lato', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; overflow: hidden; color: #1b264f;
+        }
+        h2 { font-family: 'Playfair Display', serif; color: #e02f5e; margin-bottom: 5px; text-align: center; }
+        p { margin-bottom: 20px; text-align: center; font-size: 0.9em; padding: 0 10px; }
+        canvas {
+            background-color: #faf7f0;
+            border: 4px solid #1b264f;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 100%;
+        }
+        #game-over {
+            display: none; position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px; border-radius: 15px;
+            text-align: center; border: 3px solid #e02f5e;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 80%; max-width: 400px;
+        }
+        .btn {
+            background-color: #e02f5e; color: white; border: none;
+            padding: 12px 25px; border-radius: 30px; font-size: 1.1em;
+            cursor: pointer; margin-top: 15px; font-weight: bold; width: 100%;
+        }
+        .btn-blue { background-color: #1b264f; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>The Apology Ride 🛵</h2>
+    <p>Tap the screen to jump over Bengaluru Potholes & Bad Excuses. Collect Hearts!</p>
+    
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <div id="game-over">
+        <h2 style="font-size: 2em;">Crash! 💥</h2>
+        <p style="font-size: 1.2em; font-weight: bold;">Hearts Collected: <span id="final-score">0</span></p>
+        <p>Okay, I might be terrible at dodging bad excuses, but my love for you is endless.</p>
+        <button class="btn" onclick="location.reload()">Try Again</button>
+        <button class="btn btn-blue" onclick="window.location.href='index.html'">Go Back to Album</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Mobile scaling
+        if (window.innerWidth < 800) {
+            canvas.width = window.innerWidth - 20;
+            canvas.height = 300;
+        }
+
+        // Game Variables
+        let frames = 0;
+        let score = 0;
+        let gameActive = true;
+        let gameSpeed = 5;
+
+        // Player (The Scooter)
+        const player = {
+            x: 50, y: canvas.height - 80, size: 50,
+            velocity: 0, gravity: 0.6, jumpPower: -12, isJumping: false,
+            draw() {
+                ctx.font = "50px Arial";
+                ctx.fillText("🛵", this.x, this.y + 40);
+            },
+            update() {
+                this.velocity += this.gravity;
+                this.y += this.velocity;
+                if (this.y >= canvas.height - 80) {
+                    this.y = canvas.height - 80;
+                    this.isJumping = false;
+                }
+            },
+            jump() {
+                if (!this.isJumping) {
+                    this.velocity = this.jumpPower;
+                    this.isJumping = true;
+                }
+            }
+        };
+
+        const obstacles = [];
+        const hearts = [];
+
+        function handleObstacles() {
+            if (frames % 120 === 0) {
+                // Randomly choose between a pothole and a bad excuse
+                const type = Math.random() > 0.5 ? "🕳️" : "💬"; 
+                obstacles.push({ x: canvas.width, y: canvas.height - 60, type: type, size: 40 });
+            }
+            
+            for (let i = 0; i < obstacles.length; i++) {
+                let obs = obstacles[i];
+                obs.x -= gameSpeed;
+                ctx.font = "40px Arial";
+                ctx.fillText(obs.type, obs.x, obs.y + 35);
+                
+                // Collision Detection
+                if (player.x < obs.x + obs.size - 10 && player.x + player.size - 10 > obs.x &&
+                    player.y < obs.y + obs.size - 10 && player.y + player.size - 10 > obs.y) {
+                    gameOver();
+                }
+                if (obs.x + obs.size < 0) obstacles.splice(i, 1);
+            }
+        }
+
+        function handleHearts() {
+            if (frames % 180 === 0) {
+                hearts.push({ x: canvas.width, y: canvas.height - 180 - Math.random() * 50, size: 30 });
+            }
+            for (let i = 0; i < hearts.length; i++) {
+                let h = hearts[i];
+                h.x -= (gameSpeed - 1);
+                ctx.font = "30px Arial";
+                ctx.fillText("❤️", h.x, h.y + 25);
+                
+                // Collect Heart
+                if (player.x < h.x + h.size && player.x + player.size > h.x &&
+                    player.y < h.y + h.size && player.y + player.size > h.y) {
+                    score++;
+                    hearts.splice(i, 1);
+                    if(score % 5 === 0) gameSpeed += 0.5; // Speed up!
+                }
+                if (h.x + h.size < 0) hearts.splice(i, 1);
+            }
+        }
+
+        function drawGround() {
+            ctx.fillStyle = "#1b264f";
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+        }
+
+        function drawScore() {
+            ctx.fillStyle = "#e02f5e";
+            ctx.font = "bold 24px Lato";
+            ctx.fillText("Hearts: " + score, 20, 40);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('game-over').style.display = 'block';
+            document.getElementById('final-score').innerText = score;
+        }
+
+        function animate() {
+            if (!gameActive) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGround();
+            player.draw();
+            player.update();
+            handleObstacles();
+            handleHearts();
+            drawScore();
+            frames++;
+            requestAnimationFrame(animate);
+        }
+
+        // Controls
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space') player.jump(); });
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); player.jump(); });
+        canvas.addEventListener('mousedown', () => player.jump());
+
+        animate();
+    </script>
+</body>
+</html>

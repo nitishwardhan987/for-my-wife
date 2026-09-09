@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Apology Issue | Vol. 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=La+Belle+Aurore&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #f4f2ef;
+        --text: #111111;
+        --accent: #8b3a3a;
+        --gray: #666666;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* Typography */
+    h1, h2, h3 { font-family: 'Bodoni Moda', serif; font-weight: 700; }
+    .handwriting { font-family: 'La Belle Aurore', cursive; color: var(--accent); }
+    
+    /* Marquee Banner */
+    .marquee {
+        background: var(--text);
+        color: var(--bg);
+        padding: 12px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        position: relative;
+        z-index: 100;
+    }
+    .marquee span {
+        display: inline-block;
+        animation: scroll 25s linear infinite;
+        padding-right: 50px;
+    }
+    @keyframes scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    /* Hero Editorial Section */
+    .hero {
+        position: relative;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+    .hero-title {
+        font-size: clamp(4rem, 15vw, 12rem);
+        line-height: 0.8;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        z-index: 2;
+        mix-blend-mode: multiply;
+    }
+    .hero-subtitle {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        font-size: clamp(0.7rem, 2vw, 1rem);
+        margin-top: 20px;
+        color: var(--gray);
+    }
+    .hero-img-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(400px, 80vw);
+        height: 60vh;
+        z-index: 1;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    }
+    .hero-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: grayscale(20%);
+    }
+    .hero-note {
+        position: absolute;
+        bottom: 15%;
+        right: 15%;
+        font-size: 1.8rem;
+        z-index: 3;
+        transform: rotate(-5deg);
+    }
+
+    /* Editorial Grid Section */
+    .editorial-container {
+        max-width: 1200px;
+        margin: 100px auto;
+        padding: 0 20px;
+    }
+    .grid-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 120px;
+        gap: 40px;
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .grid-row.visible { opacity: 1; transform: translateY(0); }
+    
+    @media(min-width: 768px) {
+        .grid-row { flex-direction: row; justify-content: space-between; align-items: center; }
+        .grid-row.reverse { flex-direction: row-reverse; }
+    }
+
+    .grid-img {
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+    }
+    .grid-img img {
+        width: 100%;
+        height: auto;
+        display: block;
+        box-shadow: 15px 15px 0px rgba(0,0,0,0.05);
+    }
+    
+    .grid-text {
+        max-width: 400px;
+        padding: 20px;
+    }
+    .grid-text h2 {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        font-style: italic;
+        line-height: 1.1;
+    }
+    .grid-text p {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--gray);
+        font-weight: 300;
+    }
+    .article-number {
+        font-family: 'Bodoni Moda', serif;
+        font-size: 5rem;
+        color: rgba(0,0,0,0.05);
+        position: absolute;
+        top: -40px;
+        left: -20px;
+        z-index: -1;
+    }
+
+    /* RSVP Interactive Section */
+    .rsvp-section {
+        background: var(--text);
+        color: var(--bg);
+        padding: 120px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .rsvp-box {
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 60px 20px;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+    }
+    .rsvp-box h3 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+    .rsvp-box p {
+        font-weight: 200;
+        color: #aaa;
+        margin-bottom: 50px;
+    }
+
+    .btn-container {
+        position: relative;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .editorial-btn {
+        background: transparent;
+        border: 1px solid var(--bg);
+        color: var(--bg);
+        padding: 15px 40px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .editorial-btn:hover { background: var(--bg); color: var(--text); }
+    
+    #btn-yes { position: relative; z-index: 10; margin-right: 20px; }
+    #btn-yes:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    #btn-no { position: absolute; z-index: 5; margin-left: 180px; color: #666; border-color: #666; }
+
+    .game-link {
+        display: inline-block;
+        margin-top: 60px;
+        color: var(--bg);
+        text-decoration: none;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--accent);
+        padding-bottom: 5px;
+        transition: color 0.3s;
+    }
+    .game-link:hover { color: var(--accent); }
+
+</style>
+</head>
+<body>
+
+    <!-- Scrolling Ticker -->
+    <div class="marquee">
+        <span>
+            BREAKING NEWS: I WAS WRONG • YOU WERE RIGHT • I AM SORRY • BREAKING NEWS: I WAS WRONG • YOU WERE RIGHT • I AM SORRY • 
+            BREAKING NEWS: I WAS WRONG • YOU WERE RIGHT • I AM SORRY • BREAKING NEWS: I WAS WRONG • YOU WERE RIGHT • I AM SORRY •
+        </span>
+    </div>
+
+    <!-- Hero Editorial -->
+    <section class="hero">
+        <div class="hero-img-container">
+            <img src="PSD_2464 Medium.jpeg" alt="The Embrace">
+        </div>
+        <h1 class="hero-title">L'Excuse</h1>
+        <p class="hero-subtitle">Vol. 01 — The Forgiveness Issue</p>
+        <div class="hero-note handwriting">I stayed up all night building this...</div>
+    </section>
+
+    <!-- Editorial Spreads -->
+    <section class="editorial-container">
+        
+        <div class="grid-row observer-item">
+            <div class="grid-img">
+                <span class="article-number">01</span>
+                <img src="PSD_1866 Medium.jpeg" alt="Looking up">
+            </div>
+            <div class="grid-text">
+                <h2>The<br>Miscalculation</h2>
+                <p>In a world where one man thought he had a valid point, he quickly realized... he didn't. This article explores the exact moment I realized my logic was entirely flawed, and your logic was flawlessly intact.</p>
+            </div>
+        </div>
+
+        <div class="grid-row reverse observer-item">
+            <div class="grid-img">
+                <span class="article-number">02</span>
+                <img src="PSD_2206 Medium.jpeg" alt="Kitchen Duel">
+            </div>
+            <div class="grid-text">
+                <h2>A Duel of<br>Wits</h2>
+                <p>Battles were fought. Spoons were raised. But in the end, it was abundantly clear who the true master of the kitchen—and the argument—really was. (Hint: It wasn't me).</p>
+                <p class="handwriting" style="font-size: 1.5rem; margin-top: 15px;">I surrender unconditionally.</p>
+            </div>
+        </div>
+
+        <div class="grid-row observer-item">
+            <div class="grid-img">
+                <span class="article-number">03</span>
+                <img src="PSD_2436 Medium.jpeg" alt="Walking together">
+            </div>
+            <div class="grid-text">
+                <h2>Moving<br>Forward</h2>
+                <p>Because at the end of the day, winning a silly argument means nothing if I'm not holding your hand. This final piece details my formal request to drop the nonsense and go back to being us.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Interactive RSVP -->
+    <section class="rsvp-section observer-item">
+        <div class="rsvp-box">
+            <h3>Formal RSVP</h3>
+            <p>Will you accept this editorial masterpiece as a valid apology?</p>
+            
+            <div class="btn-container">
+                <button class="editorial-btn" id="btn-yes">Accept & Forgive</button>
+                <button class="editorial-btn" id="btn-no">Decline</button>
+            </div>
+            
+            <h3 id="success-msg" class="handwriting" style="display:none; margin-top: 40px; font-size: 2.5rem; color: var(--accent);">
+                Thank you. I promise to be better.
+            </h3>
+
+            <a href="game.html" class="game-link">Or, test my dedication in the Apology Ride</a>
+        </div>
+    </section>
+
+    <script>
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.observer-item').forEach(item => observer.observe(item));
+
+        // The Elusive "No" Button
+        const noBtn = document.getElementById('btn-no');
+        function dodge() {
+            const container = document.querySelector('.btn-container');
+            const maxX = container.offsetWidth - noBtn.offsetWidth;
+            const maxY = 100;
+            const x = (Math.random() - 0.5) * maxX;
+            const y = (Math.random() - 0.5) * maxY;
+            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+        
+        noBtn.addEventListener('mouseover', dodge);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); });
+
+        // The "Yes" Button
+        document.getElementById('btn-yes').addEventListener('click', () => {
+            document.getElementById('success-msg').style.display = 'block';
+            document.querySelector('.btn-container').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

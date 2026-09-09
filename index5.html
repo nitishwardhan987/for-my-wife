@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Written in the Stars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --space:#05060f;
+    --space-deep:#0a0d1f;
+    --nebula:#7a5fb8;
+    --gold:#e8c76f;
+    --rose:#e18aa0;
+    --starlight:#f4f2ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--space);
+    color:var(--starlight);
+    font-family:'Cormorant Garamond',serif;
+    font-size:19px;
+    line-height:1.7;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{ font-family:'Cinzel',serif; font-weight:600; letter-spacing:0.02em; }
+  .script{ font-family:'Dancing Script',cursive; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  #starfield{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    display:block;
+  }
+  .content{ position:relative; z-index:1; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:60px 20px;
+  }
+  .hero .eyebrow{
+    font-family:'Cinzel',serif;
+    letter-spacing:0.35em;
+    font-size:0.75em;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(2.2em, 7vw, 3.6em);
+    background:linear-gradient(135deg, var(--starlight), var(--gold) 60%, var(--rose));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero .sub{
+    margin-top:20px;
+    font-style:italic;
+    font-size:1.3em;
+    color:var(--starlight);
+    opacity:0.85;
+    max-width:460px;
+  }
+  .scroll-cue{
+    margin-top:50px;
+    font-family:'Dancing Script',cursive;
+    font-size:1.5em;
+    color:var(--gold);
+    opacity:0.9;
+    animation:drift 2.4s ease-in-out infinite;
+  }
+  @keyframes drift{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(10px); } }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:100px 20px; max-width:1000px; margin:0 auto; position:relative; }
+  .section-head{ text-align:center; margin-bottom:56px; }
+  .section-head .eyebrow{
+    font-family:'Cinzel',serif;
+    letter-spacing:0.3em;
+    font-size:0.7em;
+    color:var(--gold);
+  }
+  .section-head h2{
+    font-size:clamp(1.8em, 4.5vw, 2.6em);
+    margin-top:10px;
+  }
+  .section-head p{
+    font-style:italic;
+    opacity:0.8;
+    max-width:520px;
+    margin:12px auto 0;
+    font-size:1.2em;
+  }
+
+  /* ---------- CONSTELLATION (section 1) ---------- */
+  .constellation-wrap{ position:relative; }
+  .constellation-svg{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    z-index:0;
+    overflow:visible;
+  }
+  .constellation-svg line{
+    stroke:var(--gold);
+    stroke-width:1.4;
+    opacity:0.65;
+    transition:stroke-dashoffset 1.4s ease-out;
+  }
+  .star-node{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:center;
+    margin:90px 0;
+    opacity:0;
+    transform:scale(0.85);
+    transition:opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .star-node.in{ opacity:1; transform:scale(1); }
+  .star-node:nth-child(odd) .star-inner{ transform:translateX(-70px); }
+  .star-node:nth-child(even) .star-inner{ transform:translateX(70px); }
+  .star-inner{ text-align:center; max-width:320px; }
+  .star-photo{
+    width:220px; height:220px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid var(--gold);
+    box-shadow:0 0 40px rgba(232,199,111,0.35), 0 0 90px rgba(122,95,184,0.25);
+    margin:0 auto;
+  }
+  .star-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .star-label{
+    margin-top:18px;
+    font-family:'Dancing Script',cursive;
+    font-size:1.5em;
+    color:var(--gold);
+  }
+  .star-caption{ margin-top:8px; opacity:0.9; }
+
+  @media (max-width:640px){
+    .star-node:nth-child(odd) .star-inner,
+    .star-node:nth-child(even) .star-inner{ transform:none; }
+  }
+
+  /* ---------- STAR CLUSTER (section 2) ---------- */
+  .cluster{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:26px;
+  }
+  .cluster-star{
+    text-align:center;
+    opacity:0;
+    transform:scale(0.85);
+    transition:opacity 0.55s ease-out, transform 0.55s ease-out;
+  }
+  .cluster-star.in{ opacity:1; transform:scale(1); }
+  .cluster-star:nth-child(3n){ margin-top:34px; }
+  .cluster-star:nth-child(4n){ margin-top:-16px; }
+  .cluster-photo{
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid rgba(232,199,111,0.6);
+    box-shadow:0 0 26px rgba(232,199,111,0.2);
+    transition:box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .cluster-star:nth-child(odd) .cluster-photo{ width:170px; height:170px; }
+  .cluster-star:nth-child(even) .cluster-photo{ width:140px; height:140px; }
+  .cluster-photo:hover{ box-shadow:0 0 48px rgba(232,199,111,0.45); transform:scale(1.04); }
+  .cluster-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .cluster-caption{
+    margin-top:14px;
+    max-width:200px;
+    font-size:0.95em;
+    opacity:0.85;
+  }
+
+  /* ---------- NORTH STAR FINALE (section 3) ---------- */
+  #north-star{
+    background:radial-gradient(ellipse 70% 55% at 50% 40%, rgba(122,95,184,0.18), transparent 65%);
+  }
+  .north-shot{
+    text-align:center;
+    margin-bottom:90px;
+    opacity:0;
+    transform:scale(0.9);
+    transition:opacity 1s ease-out, transform 1s ease-out;
+  }
+  .north-shot.in{ opacity:1; transform:scale(1); }
+  .radiant{
+    position:relative;
+    width:min(320px, 70vw);
+    aspect-ratio:1;
+    margin:0 auto;
+  }
+  .radiant::before{
+    content:'';
+    position:absolute;
+    inset:-40px;
+    background:conic-gradient(from 0deg, transparent 0deg, rgba(232,199,111,0.25) 10deg, transparent 20deg, transparent 160deg, rgba(232,199,111,0.2) 170deg, transparent 180deg, transparent 340deg, rgba(232,199,111,0.22) 350deg, transparent 360deg);
+    border-radius:50%;
+    animation:rotateBeams 30s linear infinite;
+  }
+  @keyframes rotateBeams{ to{ transform:rotate(360deg); } }
+  .radiant-photo{
+    position:relative;
+    width:100%; height:100%;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid var(--gold);
+    box-shadow:0 0 70px rgba(232,199,111,0.4);
+  }
+  .radiant-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .north-caption{
+    margin-top:26px;
+    font-style:italic;
+    font-size:1.25em;
+    max-width:440px;
+    margin-left:auto; margin-right:auto;
+    opacity:0.9;
+  }
+
+  /* ---------- MAKE A WISH ---------- */
+  .wish-section{
+    text-align:center;
+    padding:100px 20px;
+  }
+  .wish-section h2{ font-size:clamp(1.7em, 4.5vw, 2.4em); color:var(--gold); }
+  .wish-section p.sub{ font-style:italic; opacity:0.8; margin-top:10px; margin-bottom:40px; }
+  .wish-star-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-size:3em;
+    color:var(--gold);
+    filter:drop-shadow(0 0 14px rgba(232,199,111,0.5));
+    transition:transform 0.2s ease;
+  }
+  .wish-star-btn:active{ transform:scale(0.9); }
+  .wish-count{
+    margin-top:16px;
+    font-family:'Cinzel',serif;
+    font-size:0.75em;
+    letter-spacing:0.15em;
+    color:var(--gold);
+    opacity:0.85;
+  }
+  .wish-result{
+    margin-top:24px;
+    font-family:'Dancing Script',cursive;
+    font-size:1.6em;
+    min-height:1.6em;
+    color:var(--starlight);
+  }
+  .wish-bonus{ display:none; margin-top:28px; }
+  .wish-bonus.show{ display:inline-block; }
+  .wish-bonus a{
+    font-family:'Cinzel',serif;
+    font-size:0.8em;
+    letter-spacing:0.08em;
+    color:var(--space);
+    background:var(--gold);
+    padding:14px 26px;
+    text-decoration:none;
+    border-radius:30px;
+  }
+
+  /* ---------- GALAXY WALL (final photos) ---------- */
+  .galaxy{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:16px;
+  }
+  .galaxy-star{
+    opacity:0;
+    transform:scale(0.8);
+    transition:opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+  .galaxy-star.in{ opacity:1; transform:scale(1); }
+  .galaxy-photo{
+    width:96px; height:96px;
+    border-radius:50%;
+    overflow:hidden;
+    border:1.5px solid rgba(232,199,111,0.5);
+    box-shadow:0 0 16px rgba(122,95,184,0.3);
+  }
+  .galaxy-star:nth-child(5n) .galaxy-photo{ width:120px; height:120px; }
+  .galaxy-star:nth-child(7n) .galaxy-photo{ width:76px; height:76px; }
+  .galaxy-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  footer{
+    text-align:center;
+    padding:90px 20px 70px;
+  }
+  footer h2{
+    font-family:'Dancing Script',cursive;
+    font-size:clamp(1.8em, 5vw, 2.6em);
+    color:var(--gold);
+    font-weight:700;
+  }
+  footer p{ margin-top:14px; opacity:0.8; font-style:italic; }
+</style>
+</head>
+<body>
+
+  <canvas id="starfield"></canvas>
+
+  <div class="content">
+
+    <section class="hero">
+      <p class="eyebrow">A STORY, CHARTED IN THE SKY</p>
+      <h1>Written in the Stars</h1>
+      <p class="sub">Every mistake I made, and every reason I'd make them all again just to end up back with you.</p>
+      <p class="scroll-cue">follow the stars ↓</p>
+    </section>
+
+    <section class="constellation-wrap" id="constellationSection">
+      <div class="section-head">
+        <p class="eyebrow">THE FIRST CONSTELLATION</p>
+        <h2>Three Stars, Charted</h2>
+        <p>the earliest points of light, connected as they were found</p>
+      </div>
+
+      <svg class="constellation-svg" id="constellationSvg"></svg>
+
+      <div class="star-node">
+        <div class="star-inner">
+          <div class="star-photo"><img src="PSD_1866 Medium.jpeg" alt="Looking up at him"></div>
+          <p class="star-label">Star One</p>
+          <p class="star-caption">Remember when you looked at me like I actually knew what I was doing? Let's go back to that.</p>
+        </div>
+      </div>
+
+      <div class="star-node">
+        <div class="star-inner">
+          <div class="star-photo"><img src="PSD_1869 Medium.jpeg" alt="Through the leaves"></div>
+          <p class="star-label">Star Two</p>
+          <p class="star-caption">Even when I try to hide from my mistakes, you always see right through me.</p>
+        </div>
+      </div>
+
+      <div class="star-node">
+        <div class="star-inner">
+          <div class="star-photo"><img src="PSD_2009 Medium.jpeg" alt="Twirling in lehenga"></div>
+          <p class="star-label">Star Three</p>
+          <p class="star-caption">Sometimes my arguments spin out of control, but you are the one who truly knows how to spin beautifully.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <p class="eyebrow">THE STAR CLUSTER</p>
+        <h2>Proof You Are Always Right</h2>
+        <p>a cluster too bright to argue with</p>
+      </div>
+      <div class="cluster">
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2081 Medium.jpeg" alt="At the piano"></div>
+          <p class="cluster-caption">Always knows how to hit the right notes, even when I am hopelessly out of tune.</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2132 Medium.jpeg" alt="Sitting on stairs"></div>
+          <p class="cluster-caption">One step above me in this relationship. I am sitting down, waiting for my sentence.</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2124 Medium.jpeg" alt="Looking in ornate mirror, smiling"></div>
+          <p class="cluster-caption">She's still smiling. There's hope. What an amazing team.</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2143 Medium.jpeg" alt="Hiding behind saree edge"></div>
+          <p class="cluster-caption">Hiding from my bad jokes right now. I promise to stop... starting tomorrow.</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2206 Medium.jpeg" alt="Kitchen duel with wooden spoons"></div>
+          <p class="cluster-caption">Putting down the cooking spoon, metaphorically. She wins this kitchen duel.</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2305 Medium.jpeg" alt="Library with papers flying dramatically"></div>
+          <p class="cluster-caption">Let's take all those arguments and throw them away like a bad chapter. Deal?</p>
+        </div>
+        <div class="cluster-star">
+          <div class="cluster-photo"><img src="PSD_2349 Medium.jpeg" alt="Scooter in stylized alleyway"></div>
+          <p class="cluster-caption">Come on, hop on. Let's ride away from all the silliness. Promise to drive better this time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="north-star">
+      <div class="section-head">
+        <p class="eyebrow">THE NORTH STAR</p>
+        <h2>The One I Navigate By</h2>
+        <p>whatever direction I lose myself in, this is what brings me home</p>
+      </div>
+
+      <div class="north-shot">
+        <div class="radiant">
+          <div class="radiant-photo"><img src="PSD_2414 Medium.jpeg" alt="Couple on dynamic swinging bench"></div>
+        </div>
+        <p class="north-caption">Life can have its ups and downs, but swinging back to you is my only priority. Let me make this right.</p>
+      </div>
+
+      <div class="north-shot">
+        <div class="radiant">
+          <div class="radiant-photo"><img src="PSD_2436 Medium.jpeg" alt="Holding hands, walking forward in front of church"></div>
+        </div>
+        <p class="north-caption">Let's walk forward, hand in hand. I am sorry, my love. Forgive me?</p>
+      </div>
+
+      <div class="north-shot">
+        <div class="radiant">
+          <div class="radiant-photo"><img src="PSD_2464 Medium.jpeg" alt="Close embrace, faces together, eyes closed"></div>
+        </div>
+        <p class="north-caption">This is my favorite version of our story. Close, together, and at peace. I love you so much.</p>
+      </div>
+    </section>
+
+    <div class="wish-section">
+      <h2>Make a Wish</h2>
+      <p class="sub">tap the star, three wishes only</p>
+      <button class="wish-star-btn" id="wishBtn">★</button>
+      <p class="wish-count" id="wishCount">0 / 3 WISHES MADE</p>
+      <p class="wish-result" id="wishResult"></p>
+      <div class="wish-bonus" id="wishBonus">
+        <a href="game.html">follow one more star →</a>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-head">
+        <p class="eyebrow">THE GALAXY</p>
+        <h2>Every Star We've Made</h2>
+        <p>a whole galaxy, and I'd still call you my favorite one</p>
+      </div>
+      <div class="galaxy" id="galaxyGrid">
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1876 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1879 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1887 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1909 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1923 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1934 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1942 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1950 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1962 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_1986 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2018 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2031 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2049 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2057 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2079 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2088 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2095 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2104 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2112 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2137 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2156 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2194 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2222 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2227 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2245 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2251 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2256 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2267 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2277 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2280 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2311 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2315 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2329 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2331 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2338 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2354 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2374 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2382 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2385 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2401 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2410 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2448 Medium.jpeg" alt="Couple pose"></div></div>
+        <div class="galaxy-star"><div class="galaxy-photo"><img src="PSD_2457 Medium.jpeg" alt="Couple pose"></div></div>
+      </div>
+    </section>
+
+    <footer>
+      <h2>and somehow, it's still you</h2>
+      <p>every single time, in every version of the sky</p>
+    </footer>
+
+  </div>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- STARFIELD CANVAS ---------------- */
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let shootingStars = [];
+
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = document.documentElement.scrollHeight;
+    buildStars();
+  }
+
+  function buildStars(){
+    const count = Math.floor((canvas.width * canvas.height) / 9000);
+    stars = Array.from({ length: Math.min(count, 400) }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.3,
+      baseAlpha: Math.random() * 0.5 + 0.3,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.015 + 0.005
+    }));
+  }
+
+  function maybeSpawnShootingStar(){
+    if (Math.random() < 0.004 && shootingStars.length < 2){
+      const startX = Math.random() * canvas.width * 0.6;
+      const startY = Math.random() * canvas.height * 0.3;
+      shootingStars.push({ x:startX, y:startY, vx:6+Math.random()*3, vy:3+Math.random()*2, life:0, maxLife:60 });
+    }
+  }
+
+  function drawFrame(t){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#f4f2ff';
+    stars.forEach(s => {
+      const a = reducedMotion ? s.baseAlpha : s.baseAlpha + Math.sin(t*s.speed + s.phase) * 0.25;
+      ctx.globalAlpha = Math.max(0, Math.min(1, a));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (!reducedMotion){
+      maybeSpawnShootingStar();
+      shootingStars.forEach(sh => {
+        sh.x += sh.vx; sh.y += sh.vy; sh.life++;
+        const alpha = 1 - sh.life / sh.maxLife;
+        const grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - sh.vx*8, sh.y - sh.vy*8);
+        grad.addColorStop(0, `rgba(244,242,255,${alpha})`);
+        grad.addColorStop(1, 'rgba(244,242,255,0)');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(sh.x - sh.vx*8, sh.y - sh.vy*8);
+        ctx.stroke();
+      });
+      shootingStars = shootingStars.filter(sh => sh.life < sh.maxLife);
+    }
+
+    requestAnimationFrame(drawFrame);
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', () => { clearTimeout(window._rz); window._rz = setTimeout(resizeCanvas, 200); });
+  requestAnimationFrame(drawFrame);
+
+  /* ---------------- REVEAL ON SCROLL ---------------- */
+  const reveal = (selector, className) => {
+    const items = document.querySelectorAll(selector);
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting){
+          e.target.classList.add(className);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    items.forEach(i => obs.observe(i));
+  };
+  reveal('.star-node', 'in');
+  reveal('.cluster-star', 'in');
+  reveal('.north-shot', 'in');
+  reveal('.galaxy-star', 'in');
+
+  /* ---------------- CONSTELLATION LINE DRAWING ---------------- */
+  function buildConstellation(){
+    const wrap = document.getElementById('constellationSection');
+    const svg = document.getElementById('constellationSvg');
+    const nodes = [...wrap.querySelectorAll('.star-photo')];
+    svg.innerHTML = '';
+    if (nodes.length < 2) return;
+
+    const wrapRect = wrap.getBoundingClientRect();
+    const points = nodes.map(n => {
+      const r = n.getBoundingClientRect();
+      return {
+        x: r.left + r.width/2 - wrapRect.left,
+        y: r.top + r.height/2 - wrapRect.top
+      };
+    });
+
+    const lines = [];
+    for (let i = 1; i < points.length; i++){
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      const p0 = points[i-1], p1 = points[i];
+      line.setAttribute('x1', p0.x); line.setAttribute('y1', p0.y);
+      line.setAttribute('x2', p1.x); line.setAttribute('y2', p1.y);
+      const len = Math.hypot(p1.x-p0.x, p1.y-p0.y);
+      line.style.strokeDasharray = len;
+      line.style.strokeDashoffset = len;
+      svg.appendChild(line);
+      lines.push({ el: line, targetIndex: i });
+    }
+
+    const starNodes = [...wrap.querySelectorAll('.star-node')];
+    const lineObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting){
+          const idx = starNodes.indexOf(e.target);
+          const line = lines.find(l => l.targetIndex === idx);
+          if (line) line.el.style.strokeDashoffset = 0;
+        }
+      });
+    }, { threshold: 0.5 });
+    starNodes.slice(1).forEach(n => lineObs.observe(n));
+  }
+
+  window.addEventListener('load', buildConstellation);
+  window.addEventListener('resize', () => { clearTimeout(window._cz); window._cz = setTimeout(buildConstellation, 250); });
+
+  /* ---------------- MAKE A WISH ---------------- */
+  const wishBtn = document.getElementById('wishBtn');
+  const wishCount = document.getElementById('wishCount');
+  const wishResult = document.getElementById('wishResult');
+  const wishBonus = document.getElementById('wishBonus');
+  let wishes = 0;
+  const wishMessages = [
+    "the first star has heard you.",
+    "the second star agrees with the first.",
+    "the third star grants it. wish come true."
+  ];
+
+  wishBtn.addEventListener('click', () => {
+    if (wishes >= 3) return;
+    wishes++;
+    wishCount.textContent = `${wishes} / 3 WISHES MADE`;
+    wishResult.textContent = wishMessages[wishes-1];
+    launchWishStreak();
+    if (wishes === 3){
+      wishBonus.classList.add('show');
+    }
+  });
+
+  function launchWishStreak(){
+    if (reducedMotion) return;
+    const streak = document.createElement('div');
+    streak.style.position = 'fixed';
+    streak.style.top = '10%';
+    streak.style.left = '-5%';
+    streak.style.width = '3px';
+    streak.style.height = '3px';
+    streak.style.background = '#e8c76f';
+    streak.style.boxShadow = '0 0 12px 2px #e8c76f';
+    streak.style.zIndex = 998;
+    streak.style.borderRadius = '50%';
+    streak.style.transition = 'transform 1.1s linear, opacity 1.1s linear';
+    document.body.appendChild(streak);
+    requestAnimationFrame(() => {
+      streak.style.transform = 'translate(120vw, 60vh)';
+      streak.style.opacity = '0';
+    });
+    setTimeout(() => streak.remove(), 1200);
+  }
+</script>
+</body>
+</html>

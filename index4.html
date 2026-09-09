@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Timeline of Us</title>
+<title>System Override | I Am Sorry</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 <style>
@@ -143,12 +143,11 @@
         .glass-card-wrapper:nth-child(even) .glass-card { flex-direction: row-reverse; }
     }
 
-    /* Card Image */
     .card-img-container {
         flex: 1;
         border-radius: 16px;
         overflow: hidden;
-        transform: translateZ(50px); /* 3D pop effect */
+        transform: translateZ(50px); 
         box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
     .card-img-container img {
@@ -162,10 +161,9 @@
         transform: scale(1.05);
     }
 
-    /* Card Content */
     .card-content {
         flex: 1;
-        transform: translateZ(30px); /* 3D pop effect */
+        transform: translateZ(30px);
     }
     .card-content h2 {
         font-family: 'Playfair Display', serif;
@@ -178,6 +176,55 @@
         line-height: 1.6;
         color: var(--text-muted);
         font-weight: 300;
+    }
+
+    /* FULL GALLERY GRID */
+    .gallery-section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 100px 20px;
+        text-align: center;
+    }
+    .gallery-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    .gallery-section p {
+        color: var(--text-muted);
+        margin-bottom: 60px;
+        font-size: 1.2rem;
+    }
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .gallery-item {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 10px;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.5s ease;
+    }
+    .gallery-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .gallery-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        border-color: rgba(255,255,255,0.4);
+    }
+    .gallery-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
     }
 
     /* Interactive Command Center (Footer) */
@@ -301,6 +348,68 @@
 
     </section>
 
+    <!-- FULL GALLERY GRID -->
+    <section class="gallery-section">
+        <h2>Data Fragments</h2>
+        <p>A completely unfiltered, un-deleted backup of why I love you.</p>
+        
+        <div class="gallery-grid">
+            <div class="gallery-item observer-item"><img src="PSD_1869 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1876 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1879 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1887 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1909 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1923 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1934 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1942 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1950 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1962 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_1986 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2009 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2018 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2031 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2049 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2057 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2079 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2081 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2088 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2095 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2104 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2112 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2124 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2132 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2137 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2143 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2156 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2194 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2222 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2227 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2245 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2251 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2256 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2267 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2277 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2280 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2305 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2311 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2315 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2329 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2331 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2338 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2349 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2354 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2374 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2382 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2385 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2401 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2410 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2414 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2436 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2448 Medium.jpeg" alt="Memory"></div>
+            <div class="gallery-item observer-item"><img src="PSD_2457 Medium.jpeg" alt="Memory"></div>
+        </div>
+    </section>
+
     <!-- Interactive Footer -->
     <section class="command-center">
         <h2>Execute Forgiveness?</h2>
@@ -331,30 +440,29 @@
         document.querySelectorAll('.observer-item').forEach(item => observer.observe(item));
 
         // 2. The 3D Glass Card Tilt Effect (Vanilla JS)
+        // We only apply this to the large narrative cards to save phone battery!
         const tiltCards = document.querySelectorAll('.tilt-card');
         
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; // x position within the element
-                const y = e.clientY - rect.top;  // y position within the element
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;  
                 
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+                const rotateX = ((y - centerY) / centerY) * -10; 
                 const rotateY = ((x - centerX) / centerX) * 10;
                 
                 card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
             
-            // Reset card when mouse leaves
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `rotateX(0deg) rotateY(0deg)`;
                 card.style.transition = `transform 0.5s ease`;
             });
             
-            // Remove transition during hover for instant response
             card.addEventListener('mouseenter', () => {
                 card.style.transition = `none`;
             });

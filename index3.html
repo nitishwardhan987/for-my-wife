@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Love Story (With One Bad Plot Twist)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Work+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0c0c0d;
+    --charcoal:#17171a;
+    --gold:#e7b23d;
+    --velvet:#9c1f2e;
+    --spotlight:#3a5a70;
+    --cream:#f4ead4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--cream);
+    font-family:'Work Sans',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{ font-family:'Bebas Neue',sans-serif; letter-spacing:0.04em; font-weight:400; }
+  .mono{ font-family:'Space Mono',monospace; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- HERO / MARQUEE ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:50px 20px;
+    position:relative;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 20%, rgba(231,178,61,0.10), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(156,31,46,0.14), transparent 65%),
+      var(--black);
+  }
+  .marquee-sign{
+    border:2px solid var(--gold);
+    border-radius:6px;
+    padding:34px 26px 28px;
+    max-width:640px;
+    position:relative;
+    background:rgba(23,23,26,0.6);
+  }
+  .marquee-lights{
+    height:12px;
+    background-image: radial-gradient(circle, var(--gold) 38%, transparent 42%);
+    background-size: 26px 12px;
+    background-repeat: repeat-x;
+    animation: chase 0.9s linear infinite;
+    opacity:0.9;
+  }
+  @keyframes chase{ from{background-position:0 0;} to{background-position:26px 0;} }
+  .marquee-lights.bottom{ margin-top:22px; }
+
+  .now-showing{
+    font-family:'Space Mono',monospace;
+    letter-spacing:0.3em;
+    font-size:0.75em;
+    color:var(--gold);
+    margin:18px 0 8px;
+  }
+  .hero h1{
+    font-size:clamp(2.4em, 8vw, 4.2em);
+    color:var(--cream);
+    line-height:0.95;
+  }
+  .hero h1 span{ color:var(--velvet); -webkit-text-stroke:1px var(--gold); }
+  .tagline{
+    font-style:italic;
+    font-size:1.15em;
+    color:var(--cream);
+    opacity:0.85;
+    max-width:460px;
+    margin:14px auto 0;
+  }
+  .starring{
+    margin-top:24px;
+    font-family:'Space Mono',monospace;
+    font-size:0.85em;
+    color:var(--gold);
+    opacity:0.9;
+  }
+  .ticket-btn{
+    margin-top:40px;
+    display:inline-block;
+    background:var(--velvet);
+    color:var(--cream);
+    font-family:'Space Mono',monospace;
+    font-size:0.85em;
+    letter-spacing:0.12em;
+    padding:14px 28px;
+    border:1px dashed var(--gold);
+    position:relative;
+    text-decoration:none;
+    animation:bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:80px 20px; max-width:1000px; margin:0 auto; position:relative; }
+  .section-head{ text-align:center; margin-bottom:50px; }
+  .section-head .kicker{
+    font-family:'Space Mono',monospace;
+    letter-spacing:0.3em;
+    font-size:0.75em;
+    color:var(--gold);
+  }
+  .section-head h2{
+    font-size:clamp(1.9em, 5vw, 2.8em);
+    margin-top:8px;
+    color:var(--cream);
+  }
+  .section-head p{
+    font-style:italic;
+    color:var(--cream);
+    opacity:0.75;
+    max-width:520px;
+    margin:10px auto 0;
+  }
+
+  /* ---------- SCENE CARDS ---------- */
+  .scene{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:70px;
+    opacity:0;
+    transform:scale(0.92) rotate(-1deg);
+    transition:opacity 0.5s ease-out, transform 0.5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .scene.in{ opacity:1; transform:scale(1) rotate(0deg); }
+  .scene-tag{
+    font-family:'Space Mono',monospace;
+    background:var(--gold);
+    color:var(--black);
+    padding:4px 12px;
+    font-size:0.8em;
+    letter-spacing:0.08em;
+    margin-bottom:10px;
+  }
+  .slug{
+    font-family:'Space Mono',monospace;
+    font-size:0.78em;
+    color:var(--gold);
+    opacity:0.8;
+    margin-bottom:14px;
+    letter-spacing:0.05em;
+  }
+  .film-frame{
+    position:relative;
+    padding:10px 10px 10px;
+    background:var(--charcoal);
+    border:1px solid rgba(231,178,61,0.4);
+    max-width:360px;
+  }
+  .film-frame::before, .film-frame::after{
+    content:'';
+    position:absolute;
+    left:0; right:0;
+    height:10px;
+    background-image: radial-gradient(circle, var(--black) 34%, transparent 38%);
+    background-size:18px 10px;
+    background-repeat:repeat-x;
+    background-color:var(--gold);
+  }
+  .film-frame::before{ top:-10px; }
+  .film-frame::after{ bottom:-10px; }
+  .film-frame img{ width:100%; display:block; }
+  .scene-caption{
+    margin-top:20px;
+    max-width:420px;
+    text-align:center;
+    color:var(--cream);
+    opacity:0.9;
+  }
+
+  /* ---------- REVIEWS GRID ---------- */
+  .reviews-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:30px;
+  }
+  .review-card{
+    background:var(--charcoal);
+    border:1px solid rgba(231,178,61,0.25);
+    padding:18px 18px 22px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 0.55s ease-out, transform 0.55s ease-out;
+  }
+  .review-card.in{ opacity:1; transform:translateY(0); }
+  .review-card img{ width:100%; display:block; margin-bottom:14px; filter:saturate(0.94); }
+  .stars{ color:var(--gold); font-size:1em; letter-spacing:2px; margin-bottom:8px; }
+  .review-quote{ font-style:italic; color:var(--cream); font-size:0.98em; margin-bottom:10px; }
+  .byline{ font-family:'Space Mono',monospace; font-size:0.72em; color:var(--gold); opacity:0.85; }
+
+  /* ---------- CLIMAX ---------- */
+  #climax{
+    background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(58,90,112,0.25), transparent 65%), var(--black);
+    padding-top:100px; padding-bottom:110px;
+  }
+  .climax-shot{
+    text-align:center;
+    margin-bottom:80px;
+    opacity:0;
+    transform:scale(0.94);
+    transition:opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .climax-shot.in{ opacity:1; transform:scale(1); }
+  .climax-frame{
+    display:inline-block;
+    border:2px solid var(--gold);
+    padding:8px;
+    background:var(--charcoal);
+    box-shadow:0 0 70px rgba(231,178,61,0.18);
+    max-width:380px;
+  }
+  .climax-frame img{ width:100%; display:block; }
+  .climax-caption{
+    margin-top:20px;
+    font-style:italic;
+    color:var(--cream);
+    max-width:440px;
+    margin-left:auto; margin-right:auto;
+  }
+  .scene-tag.velvet{ background:var(--velvet); color:var(--cream); }
+
+  /* ---------- INTERMISSION / STAR RATING ---------- */
+  .intermission{
+    text-align:center;
+    padding:90px 20px;
+    background:var(--charcoal);
+  }
+  .intermission h2{ font-size:clamp(2em, 5vw, 2.8em); color:var(--gold); }
+  .intermission p.sub{ font-style:italic; opacity:0.8; margin-top:8px; margin-bottom:36px; }
+  .rating-stars{
+    font-size:2.4em;
+    letter-spacing:0.15em;
+    cursor:pointer;
+  }
+  .rating-stars span{ color:#4a4a4a; transition:color 0.15s ease, transform 0.15s ease; }
+  .rating-stars span.lit{ color:var(--gold); }
+  .rating-stars span:hover{ transform:scale(1.15); }
+  .rating-result{
+    margin-top:26px;
+    font-family:'Space Mono',monospace;
+    font-size:1em;
+    color:var(--cream);
+    min-height:1.4em;
+  }
+  .bonus-link{
+    display:none;
+    margin-top:30px;
+  }
+  .bonus-link.show{ display:inline-block; }
+  .bonus-link a{
+    color:var(--black);
+    background:var(--gold);
+    font-family:'Space Mono',monospace;
+    padding:12px 26px;
+    text-decoration:none;
+    letter-spacing:0.08em;
+    font-size:0.85em;
+  }
+
+  /* ---------- CONTACT SHEET / END CREDITS ---------- */
+  #reel{ background:var(--black); }
+  .contact-sheet{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
+    gap:4px;
+    background:#000;
+    padding:14px;
+    border:1px solid rgba(231,178,61,0.25);
+  }
+  .frame{
+    position:relative;
+    opacity:0;
+    transition:opacity 0.4s ease-out;
+  }
+  .frame.in{ opacity:1; }
+  .frame img{ width:100%; display:block; filter:grayscale(0.15) contrast(1.02); transition:filter 0.25s ease, transform 0.25s ease; }
+  .frame:hover img{ filter:none; transform:scale(1.04); }
+  .frame-number{
+    position:absolute;
+    bottom:4px; right:6px;
+    font-family:'Space Mono',monospace;
+    font-size:0.62em;
+    color:var(--gold);
+    background:rgba(0,0,0,0.55);
+    padding:1px 5px;
+  }
+
+  footer{
+    text-align:center;
+    padding:70px 20px 50px;
+    background:var(--black);
+  }
+  footer .the-end{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2em, 6vw, 3em);
+    color:var(--gold);
+    letter-spacing:0.1em;
+  }
+  footer .credit-line{
+    margin-top:14px;
+    font-family:'Space Mono',monospace;
+    font-size:0.85em;
+    color:var(--cream);
+    opacity:0.75;
+  }
+</style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="marquee-sign">
+      <div class="marquee-lights"></div>
+      <p class="now-showing">now showing &middot; one screen only</p>
+      <h1>A LOVE STORY<br>(WITH ONE <span>BAD PLOT TWIST</span>)</h1>
+      <p class="tagline">A husband. A wife. A string of arguments that never should have happened. Rated: probably deserved it.</p>
+      <p class="starring">starring: him (the flawed one) &amp; her (always right)</p>
+      <div class="marquee-lights bottom"></div>
+    </div>
+    <a href="#scene-01" class="ticket-btn">ADMIT ONE — SCROLL TO BEGIN ▾</a>
+  </section>
+
+  <section id="scene-01">
+    <div class="section-head">
+      <p class="kicker">ACT ONE</p>
+      <h2>Scenes 01–03</h2>
+      <p>the opening act, presented in my defense</p>
+    </div>
+
+    <div class="scene">
+      <span class="scene-tag">SCENE 01</span>
+      <p class="slug mono">INT. SOMEWHERE WE WERE HAPPY — DAY</p>
+      <div class="film-frame"><img src="PSD_1866 Medium.jpeg" alt="Looking up at him"></div>
+      <p class="scene-caption">Remember when you looked at me like I actually knew what I was doing? Let's go back to that.</p>
+    </div>
+
+    <div class="scene">
+      <span class="scene-tag">SCENE 02</span>
+      <p class="slug mono">EXT. WOODED PATH — GOLDEN HOUR</p>
+      <div class="film-frame"><img src="PSD_1869 Medium.jpeg" alt="Through the leaves"></div>
+      <p class="scene-caption">Even when I try to hide from my mistakes, you always see right through me.</p>
+    </div>
+
+    <div class="scene">
+      <span class="scene-tag">SCENE 03</span>
+      <p class="slug mono">EXT. COURTYARD — MAGIC HOUR</p>
+      <div class="film-frame"><img src="PSD_2009 Medium.jpeg" alt="Twirling in lehenga"></div>
+      <p class="scene-caption">Sometimes my arguments spin out of control, but you are the one who truly knows how to spin beautifully.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <p class="kicker">CRITICS AGREE</p>
+      <h2>Now Reviewing: My Wife</h2>
+      <p>early screenings unanimous — one reviewer particularly biased</p>
+    </div>
+    <div class="reviews-grid">
+
+      <div class="review-card">
+        <img src="PSD_2081 Medium.jpeg" alt="At the piano">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Always knows how to hit the right notes, even when I am hopelessly out of tune."</p>
+        <p class="byline">— THE HUSBAND, opening night</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2132 Medium.jpeg" alt="Sitting on stairs">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Literally one step above me in this relationship. I am sitting down, waiting for my sentence."</p>
+        <p class="byline">— THE HUSBAND, still on the stairs</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2124 Medium.jpeg" alt="Looking in ornate mirror, smiling">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"She's still smiling. There's hope. What an amazing team."</p>
+        <p class="byline">— THE HUSBAND, cautiously optimistic</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2143 Medium.jpeg" alt="Hiding behind saree edge">
+        <div class="stars">★★★★☆</div>
+        <p class="review-quote">"She just wants to hide from my bad jokes right now. I promise to stop... starting tomorrow."</p>
+        <p class="byline">— THE HUSBAND, one star docked for the jokes</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2206 Medium.jpeg" alt="Kitchen duel with wooden spoons">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Putting down the cooking spoon, metaphorically. She wins this kitchen duel."</p>
+        <p class="byline">— THE HUSBAND, spoon technique: superior</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2305 Medium.jpeg" alt="Library with papers flying dramatically">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Let's take all those arguments and throw them away like a bad chapter. Deal?"</p>
+        <p class="byline">— THE HUSBAND, rewriting the ending</p>
+      </div>
+
+      <div class="review-card">
+        <img src="PSD_2349 Medium.jpeg" alt="Scooter in stylized alleyway">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Come on, hop on. Let's ride away from all the silliness. Promise to drive better this time."</p>
+        <p class="byline">— THE HUSBAND, running from his own bad arguments</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="climax">
+    <div class="section-head">
+      <p class="kicker">ACT THREE</p>
+      <h2>The Climax</h2>
+      <p>every good story needs one. this is my plea for the resolution.</p>
+    </div>
+
+    <div class="climax-shot">
+      <span class="scene-tag velvet">SCENE 08</span>
+      <div class="climax-frame"><img src="PSD_2414 Medium.jpeg" alt="Couple on dynamic swinging bench"></div>
+      <p class="climax-caption">Life can have its ups and downs, but swinging back to you is my only priority. Let me make this right.</p>
+    </div>
+
+    <div class="climax-shot">
+      <span class="scene-tag velvet">SCENE 09</span>
+      <div class="climax-frame"><img src="PSD_2436 Medium.jpeg" alt="Holding hands, walking forward in front of church"></div>
+      <p class="climax-caption">Let's walk forward, hand in hand. I am sorry, my love. Forgive me?</p>
+    </div>
+
+    <div class="climax-shot">
+      <span class="scene-tag velvet">FINAL SCENE</span>
+      <div class="climax-frame"><img src="PSD_2464 Medium.jpeg" alt="Close embrace, faces together, eyes closed"></div>
+      <p class="climax-caption">This is my favorite version of our story. Close, together, and at peace. I love you so much.</p>
+    </div>
+  </section>
+
+  <div class="intermission">
+    <h2>INTERMISSION</h2>
+    <p class="sub">rate tonight's performance, jury of one</p>
+    <div class="rating-stars" id="ratingStars">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+    <div class="rating-result" id="ratingResult">tap a star</div>
+    <div class="bonus-link" id="bonusLink">
+      <a href="game.html">🎬 unlock the post-credits scene</a>
+    </div>
+  </div>
+
+  <section id="reel">
+    <div class="section-head">
+      <p class="kicker">END CREDITS</p>
+      <h2>The Outtakes Reel</h2>
+      <p>every frame we shot, none of them cut</p>
+    </div>
+    <div class="contact-sheet" id="contactSheet">
+      <div class="frame"><img src="PSD_1876 Medium.jpeg" alt="Couple pose"><span class="frame-number">01A</span></div>
+      <div class="frame"><img src="PSD_1879 Medium.jpeg" alt="Couple pose"><span class="frame-number">01B</span></div>
+      <div class="frame"><img src="PSD_1887 Medium.jpeg" alt="Couple pose"><span class="frame-number">02A</span></div>
+      <div class="frame"><img src="PSD_1909 Medium.jpeg" alt="Couple pose"><span class="frame-number">02B</span></div>
+      <div class="frame"><img src="PSD_1923 Medium.jpeg" alt="Couple pose"><span class="frame-number">03A</span></div>
+      <div class="frame"><img src="PSD_1934 Medium.jpeg" alt="Couple pose"><span class="frame-number">03B</span></div>
+      <div class="frame"><img src="PSD_1942 Medium.jpeg" alt="Couple pose"><span class="frame-number">04A</span></div>
+      <div class="frame"><img src="PSD_1950 Medium.jpeg" alt="Couple pose"><span class="frame-number">04B</span></div>
+      <div class="frame"><img src="PSD_1962 Medium.jpeg" alt="Couple pose"><span class="frame-number">05A</span></div>
+      <div class="frame"><img src="PSD_1986 Medium.jpeg" alt="Couple pose"><span class="frame-number">05B</span></div>
+      <div class="frame"><img src="PSD_2018 Medium.jpeg" alt="Couple pose"><span class="frame-number">06A</span></div>
+      <div class="frame"><img src="PSD_2031 Medium.jpeg" alt="Couple pose"><span class="frame-number">06B</span></div>
+      <div class="frame"><img src="PSD_2049 Medium.jpeg" alt="Couple pose"><span class="frame-number">07A</span></div>
+      <div class="frame"><img src="PSD_2057 Medium.jpeg" alt="Couple pose"><span class="frame-number">07B</span></div>
+      <div class="frame"><img src="PSD_2079 Medium.jpeg" alt="Couple pose"><span class="frame-number">08A</span></div>
+      <div class="frame"><img src="PSD_2088 Medium.jpeg" alt="Couple pose"><span class="frame-number">08B</span></div>
+      <div class="frame"><img src="PSD_2095 Medium.jpeg" alt="Couple pose"><span class="frame-number">09A</span></div>
+      <div class="frame"><img src="PSD_2104 Medium.jpeg" alt="Couple pose"><span class="frame-number">09B</span></div>
+      <div class="frame"><img src="PSD_2112 Medium.jpeg" alt="Couple pose"><span class="frame-number">10A</span></div>
+      <div class="frame"><img src="PSD_2137 Medium.jpeg" alt="Couple pose"><span class="frame-number">10B</span></div>
+      <div class="frame"><img src="PSD_2156 Medium.jpeg" alt="Couple pose"><span class="frame-number">11A</span></div>
+      <div class="frame"><img src="PSD_2194 Medium.jpeg" alt="Couple pose"><span class="frame-number">11B</span></div>
+      <div class="frame"><img src="PSD_2222 Medium.jpeg" alt="Couple pose"><span class="frame-number">12A</span></div>
+      <div class="frame"><img src="PSD_2227 Medium.jpeg" alt="Couple pose"><span class="frame-number">12B</span></div>
+      <div class="frame"><img src="PSD_2245 Medium.jpeg" alt="Couple pose"><span class="frame-number">13A</span></div>
+      <div class="frame"><img src="PSD_2251 Medium.jpeg" alt="Couple pose"><span class="frame-number">13B</span></div>
+      <div class="frame"><img src="PSD_2256 Medium.jpeg" alt="Couple pose"><span class="frame-number">14A</span></div>
+      <div class="frame"><img src="PSD_2267 Medium.jpeg" alt="Couple pose"><span class="frame-number">14B</span></div>
+      <div class="frame"><img src="PSD_2277 Medium.jpeg" alt="Couple pose"><span class="frame-number">15A</span></div>
+      <div class="frame"><img src="PSD_2280 Medium.jpeg" alt="Couple pose"><span class="frame-number">15B</span></div>
+      <div class="frame"><img src="PSD_2311 Medium.jpeg" alt="Couple pose"><span class="frame-number">16A</span></div>
+      <div class="frame"><img src="PSD_2315 Medium.jpeg" alt="Couple pose"><span class="frame-number">16B</span></div>
+      <div class="frame"><img src="PSD_2329 Medium.jpeg" alt="Couple pose"><span class="frame-number">17A</span></div>
+      <div class="frame"><img src="PSD_2331 Medium.jpeg" alt="Couple pose"><span class="frame-number">17B</span></div>
+      <div class="frame"><img src="PSD_2338 Medium.jpeg" alt="Couple pose"><span class="frame-number">18A</span></div>
+      <div class="frame"><img src="PSD_2354 Medium.jpeg" alt="Couple pose"><span class="frame-number">18B</span></div>
+      <div class="frame"><img src="PSD_2374 Medium.jpeg" alt="Couple pose"><span class="frame-number">19A</span></div>
+      <div class="frame"><img src="PSD_2382 Medium.jpeg" alt="Couple pose"><span class="frame-number">19B</span></div>
+      <div class="frame"><img src="PSD_2385 Medium.jpeg" alt="Couple pose"><span class="frame-number">20A</span></div>
+      <div class="frame"><img src="PSD_2401 Medium.jpeg" alt="Couple pose"><span class="frame-number">20B</span></div>
+      <div class="frame"><img src="PSD_2410 Medium.jpeg" alt="Couple pose"><span class="frame-number">21A</span></div>
+      <div class="frame"><img src="PSD_2448 Medium.jpeg" alt="Couple pose"><span class="frame-number">21B</span></div>
+      <div class="frame"><img src="PSD_2457 Medium.jpeg" alt="Couple pose"><span class="frame-number">22A</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="the-end">THE END</div>
+    <p class="credit-line">❤ a lifelong production &middot; starring the two of us &middot; sequel already in the works</p>
+  </footer>
+
+<script>
+  const reveal = (selector, className) => {
+    const items = document.querySelectorAll(selector);
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting){
+          e.target.classList.add(className);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    items.forEach(i => obs.observe(i));
+  };
+  reveal('.scene', 'in');
+  reveal('.review-card', 'in');
+  reveal('.climax-shot', 'in');
+  reveal('.frame', 'in');
+
+  // Star rating intermission
+  const stars = document.querySelectorAll('#ratingStars span');
+  const ratingResult = document.getElementById('ratingResult');
+  const bonusLink = document.getElementById('bonusLink');
+  const messages = {
+    1: "ouch. one more chance?",
+    2: "the reviewer has notes.",
+    3: "getting warmer.",
+    4: "so close to a standing ovation.",
+    5: "a five-star, unanimous, critically-acclaimed forgiveness."
+  };
+
+  function paintStars(n){
+    stars.forEach(s => {
+      s.classList.toggle('lit', Number(s.dataset.v) <= n);
+    });
+  }
+
+  stars.forEach(s => {
+    s.addEventListener('mouseenter', () => paintStars(Number(s.dataset.v)));
+    s.addEventListener('click', () => {
+      const v = Number(s.dataset.v);
+      paintStars(v);
+      ratingResult.textContent = messages[v];
+      if (v === 5){
+        bonusLink.classList.add('show');
+        burstHearts();
+      } else {
+        bonusLink.classList.remove('show');
+      }
+    });
+  });
+  document.getElementById('ratingStars').addEventListener('mouseleave', () => {
+    const active = [...stars].filter(s => s.classList.contains('lit')).length;
+  });
+
+  function burstHearts(){
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const count = reducedMotion ? 6 : 20;
+    const originRect = document.getElementById('ratingStars').getBoundingClientRect();
+    for (let i = 0; i < count; i++){
+      const h = document.createElement('div');
+      h.textContent = ['★','❤','🎬'][i % 3];
+      h.style.position = 'fixed';
+      h.style.left = (originRect.left + originRect.width/2 + (Math.random()-0.5)*220) + 'px';
+      h.style.top = originRect.top + 'px';
+      h.style.fontSize = (14 + Math.random()*18) + 'px';
+      h.style.color = '#e7b23d';
+      h.style.pointerEvents = 'none';
+      h.style.zIndex = 999;
+      h.style.transition = 'transform 1.5s ease-out, opacity 1.5s ease-out';
+      document.body.appendChild(h);
+      requestAnimationFrame(() => {
+        h.style.transform = `translate(${(Math.random()-0.5)*180}px, -${160+Math.random()*160}px) rotate(${(Math.random()-0.5)*90}deg)`;
+        h.style.opacity = '0';
+      });
+      setTimeout(() => h.remove(), 1600);
+    }
+  }
+</script>
+</body>
+</html>

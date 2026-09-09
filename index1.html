@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drive Back To You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Caveat:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parchment:#f6ecd9;
+    --parchment-deep:#efe0bd;
+    --ink:#2b2118;
+    --maroon:#8c2f39;
+    --maroon-deep:#5e1e26;
+    --gold:#b8892b;
+    --sage:#5b6b4f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Lato',sans-serif;
+    color:var(--ink);
+    background:var(--parchment);
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:30px 16px 50px;
+  }
+  h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.6em, 5vw, 2.3em);
+    color:var(--maroon-deep);
+    text-align:center;
+    margin-bottom:4px;
+  }
+  .sub{
+    font-family:'Caveat',cursive;
+    font-size:1.3em;
+    color:var(--ink);
+    opacity:0.85;
+    margin-bottom:22px;
+    text-align:center;
+  }
+
+  #stage-wrap{
+    position:relative;
+    width:100%;
+    max-width:520px;
+  }
+  canvas{
+    width:100%;
+    display:block;
+    background:linear-gradient(180deg, #f9f1de 0%, #eeddb8 100%);
+    border:3px solid var(--maroon-deep);
+    border-radius:10px;
+    box-shadow:0 14px 30px rgba(43,33,24,0.22);
+    touch-action:none;
+  }
+
+  .hud{
+    display:flex;
+    justify-content:space-between;
+    width:100%;
+    max-width:520px;
+    margin-top:12px;
+    font-family:'Lato',sans-serif;
+    font-weight:700;
+    color:var(--maroon-deep);
+    font-size:0.95em;
+  }
+
+  .controls{
+    display:flex;
+    gap:16px;
+    margin-top:20px;
+  }
+  .ctrl-btn{
+    width:64px;height:64px;
+    border-radius:50%;
+    border:2px solid var(--maroon-deep);
+    background:var(--parchment-deep);
+    font-size:1.6em;
+    color:var(--maroon-deep);
+    display:flex;align-items:center;justify-content:center;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .ctrl-btn:active{ background:var(--maroon); color:var(--parchment); }
+
+  .overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(43,33,24,0.82);
+    color:var(--parchment);
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    border-radius:8px;
+    padding:20px;
+  }
+  .overlay.show{ display:flex; }
+  .overlay h2{
+    font-family:'Playfair Display',serif;
+    font-size:1.6em;
+    margin-bottom:10px;
+    color:var(--gold);
+  }
+  .overlay p{
+    font-family:'Caveat',cursive;
+    font-size:1.4em;
+    max-width:340px;
+    margin-bottom:22px;
+  }
+  .overlay button, .back-link{
+    padding:12px 26px;
+    border-radius:40px;
+    border:none;
+    background:var(--maroon);
+    color:var(--parchment);
+    font-family:'Lato',sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+    margin:6px;
+  }
+
+  .back-row{
+    margin-top:30px;
+  }
+</style>
+</head>
+<body>
+
+  <h1>Drive Back To You</h1>
+  <p class="sub">dodge the potholes, collect the hearts, make it home</p>
+
+  <div id="stage-wrap">
+    <canvas id="game" width="480" height="640"></canvas>
+    <div class="overlay" id="startOverlay">
+      <h2>One more ride</h2>
+      <p>Steer the scooter with ← → or the buttons below.<br>Grab hearts. Dodge potholes. Reach her.</p>
+      <button id="startBtn">Start the ride</button>
+    </div>
+    <div class="overlay" id="endOverlay">
+      <h2 id="endTitle">You made it</h2>
+      <p id="endMsg"></p>
+      <button id="retryBtn">Ride again</button>
+      <a class="back-link" href="for-my-wife.html">Back to the letter</a>
+    </div>
+  </div>
+
+  <div class="hud">
+    <span id="scoreLabel">Hearts: 0</span>
+    <span id="distLabel">Distance: 0 m</span>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-btn" id="leftBtn">◀</div>
+    <div class="ctrl-btn" id="rightBtn">▶</div>
+  </div>
+
+  <div class="back-row">
+    <a class="back-link" href="for-my-wife.html" style="background:var(--ink);">Skip the game, go back</a>
+  </div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const startOverlay = document.getElementById('startOverlay');
+  const endOverlay = document.getElementById('endOverlay');
+  const endTitle = document.getElementById('endTitle');
+  const endMsg = document.getElementById('endMsg');
+  const scoreLabel = document.getElementById('scoreLabel');
+  const distLabel = document.getElementById('distLabel');
+
+  const LANES = 3;
+  const laneWidth = W / LANES;
+  const laneX = i => laneWidth * i + laneWidth/2;
+
+  const FINISH_DISTANCE = 900; // meters, arbitrary
+  let running = false;
+  let lane = 1;
+  let targetLane = 1;
+  let scooterX = laneX(1);
+  let hearts = 0;
+  let distance = 0;
+  let speed = 4.2;
+  let obstacles = [];
+  let spawnTimer = 0;
+  let lastTime = 0;
+
+  function reset(){
+    lane = 1; targetLane = 1; scooterX = laneX(1);
+    hearts = 0; distance = 0; speed = 4.2;
+    obstacles = []; spawnTimer = 0;
+    updateHud();
+  }
+
+  function updateHud(){
+    scoreLabel.textContent = 'Hearts: ' + hearts;
+    distLabel.textContent = 'Distance: ' + Math.floor(distance) + ' m';
+  }
+
+  function spawnObstacle(){
+    const type = Math.random() < 0.35 ? 'heart' : 'pothole';
+    const l = Math.floor(Math.random() * LANES);
+    obstacles.push({ lane: l, y: -40, type });
+  }
+
+  function drawRoad(){
+    ctx.fillStyle = '#e9dcb8';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle = 'rgba(43,33,24,0.25)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([18,16]);
+    for (let i=1;i<LANES;i++){
+      ctx.beginPath();
+      ctx.moveTo(laneWidth*i, 0);
+      ctx.lineTo(laneWidth*i, H);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+
+  function drawScooter(x,y){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.fillStyle = '#8c2f39';
+    ctx.beginPath();
+    ctx.ellipse(0, 10, 22, 12, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2b2118';
+    ctx.beginPath(); ctx.arc(-14, 22, 8, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(14, 22, 8, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#f6ecd9';
+    ctx.beginPath(); ctx.arc(0, -6, 9, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPothole(x,y){
+    ctx.fillStyle = 'rgba(43,33,24,0.55)';
+    ctx.beginPath();
+    ctx.ellipse(x, y, 20, 12, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawHeart(x,y){
+    ctx.fillStyle = '#c9455a';
+    ctx.font = '28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('❤', x, y+10);
+  }
+
+  function loop(ts){
+    if (!running) return;
+    const dt = lastTime ? (ts - lastTime)/16.67 : 1;
+    lastTime = ts;
+
+    speed = Math.min(9, 4.2 + distance/220);
+    distance += speed * 0.12;
+
+    scooterX += (laneX(targetLane) - scooterX) * 0.25;
+
+    spawnTimer -= dt;
+    if (spawnTimer <= 0){
+      spawnObstacle();
+      spawnTimer = Math.max(22, 42 - distance/40);
+    }
+
+    drawRoad();
+
+    for (let i = obstacles.length - 1; i >= 0; i--){
+      const o = obstacles[i];
+      o.y += speed * 1.6 * dt;
+      const ox = laneX(o.lane);
+
+      if (o.type === 'pothole') drawPothole(ox, o.y);
+      else drawHeart(ox, o.y);
+
+      const dx = Math.abs(ox - scooterX);
+      const closeY = Math.abs(o.y - (H - 90));
+      if (dx < 26 && closeY < 26){
+        if (o.type === 'pothole'){
+          endGame(false);
+          return;
+        } else {
+          hearts++;
+          updateHud();
+          obstacles.splice(i,1);
+          continue;
+        }
+      }
+      if (o.y > H + 40) obstacles.splice(i,1);
+    }
+
+    drawScooter(scooterX, H - 90);
+    updateHud();
+
+    if (distance >= FINISH_DISTANCE){
+      endGame(true);
+      return;
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function endGame(won){
+    running = false;
+    endOverlay.classList.add('show');
+    if (won){
+      endTitle.textContent = 'You made it home';
+      endMsg.textContent = 'Every pothole dodged, every heart collected. I promise the real ride will be smoother. Forgive me?';
+    } else {
+      endTitle.textContent = 'Rough road';
+      endMsg.textContent = 'Hit a pothole, just like I hit a nerve. Let\'s try that drive again.';
+    }
+  }
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    startOverlay.classList.remove('show');
+    reset();
+    running = true;
+    lastTime = 0;
+    requestAnimationFrame(loop);
+  });
+
+  document.getElementById('retryBtn').addEventListener('click', () => {
+    endOverlay.classList.remove('show');
+    reset();
+    running = true;
+    lastTime = 0;
+    requestAnimationFrame(loop);
+  });
+
+  function moveLeft(){ targetLane = Math.max(0, targetLane - 1); }
+  function moveRight(){ targetLane = Math.min(LANES - 1, targetLane + 1); }
+
+  window.addEventListener('keydown', (e) => {
+    if (!running) return;
+    if (e.key === 'ArrowLeft') moveLeft();
+    if (e.key === 'ArrowRight') moveRight();
+  });
+  document.getElementById('leftBtn').addEventListener('click', moveLeft);
+  document.getElementById('rightBtn').addEventListener('click', moveRight);
+
+  let touchStartX = null;
+  canvas.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  canvas.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx > 30) moveRight();
+    else if (dx < -30) moveLeft();
+    touchStartX = null;
+  });
+
+  drawRoad();
+  drawScooter(laneX(1), H - 90);
+  startOverlay.classList.add('show');
+})();
+</script>
+</body>
+</html>
